@@ -1,0 +1,56 @@
+<assembly>
+    <id>${activeProfile}</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <!-- 最终打包成一个用于发布的zip文件 -->
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <!-- Adds dependencies to zip package under lib directory -->
+    <dependencySets>
+        <dependencySet>
+            <!--
+               不使用项目的artifact，第三方jar不要解压，打包进zip文件的lib目录
+           -->
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>${package-name}-${activeProfile}/lib</outputDirectory>
+            <unpack>false</unpack>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <!-- 把项目的配置文件，打包进zip文件的config目录 -->
+        <fileSet>
+            <directory>${project.basedir}/src/main/profiles/${activeProfile}</directory>
+            <outputDirectory>${package-name}-${activeProfile}/conf</outputDirectory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+
+        <!--启动脚本打包进zip文件-->
+        <fileSet>
+            <directory>${project.basedir}/src/main/package</directory>
+            <outputDirectory>${package-name}-${activeProfile}/bin/</outputDirectory>
+            <includes>
+                <include>*.sh</include>
+            </includes>
+            <!-- 文件文件权限为777 -->
+            <fileMode>777</fileMode>
+            <!-- 目录权限为777  -->
+            <directoryMode>777</directoryMode>
+            <!--脚本中参数变量为pom中的值 关键-->
+            <filtered>true</filtered>
+        </fileSet>
+
+
+        <!-- 把项目自己编译出来的jar文件，打包进zip文件的lib目录 -->
+        <fileSet>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory>${package-name}-${activeProfile}/lib</outputDirectory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>
