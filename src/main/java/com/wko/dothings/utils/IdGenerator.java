@@ -40,7 +40,7 @@ public class IdGenerator {
     private final static int COUNT_BITS = 32;
 
     /**
-     * 时间格式
+     * 时间格式：精确到天的统计
      */
     private final static String PATTERN = "yyyy:MM:dd";
 
@@ -53,11 +53,13 @@ public class IdGenerator {
     public long nextId(String keyPrefix) {
         LocalDateTime now = LocalDateTime.now();
         long nowSecond = now.toEpochSecond(ZoneOffset.UTC);
+        //当前时间减去开始时间得到一个递增的时间戳
         long timeStamp = nowSecond - BEGIN_TIMESTAMP;
         String sTime = now.format(DateTimeFormatter.ofPattern(PATTERN));
-        Long endTimesTamp = redisTemplate
+        //key 按日期自增（每天统计）
+        long increment = redisTemplate
                 .opsForValue()
                 .increment("idIncr:" + keyPrefix + ":" + sTime, DELTA);
-        return endTimesTamp == null ? 0 : timeStamp << COUNT_BITS | endTimesTamp;
+        return timeStamp << COUNT_BITS | increment;
     }
 }

@@ -17,8 +17,7 @@ import javax.sql.DataSource;
  * 数据源配置类
  */
 @Configuration
-@MapperScan(basePackages = "com.wko.dothings.wallet.dao.local",sqlSessionFactoryRef = "localSqlSessionRef")
-@MapperScan(basePackages = "com.wko.dothings.wallet.dao.remote",sqlSessionFactoryRef = "remoteSqlSessionRef")
+@MapperScan(basePackages = "com.wko.dothings.wallet.dao",sqlSessionFactoryRef = "localSqlSessionRef")
 public class DataSourceConfig {
 
     @Autowired
@@ -33,28 +32,12 @@ public class DataSourceConfig {
         druidDataSource.setDriverClassName(environment.getProperty("spring.datasource.driver-class-name"));
         return druidDataSource;
     }
-
-    @Bean
-    public DataSource remoteDataSource() {
-        DruidDataSource druidDataSource = new DruidDataSource();
-        druidDataSource.setUrl(environment.getProperty("spring.datasource.db2.url"));
-        druidDataSource.setUsername(environment.getProperty("spring.datasource.db2.username"));
-        druidDataSource.setPassword(environment.getProperty("spring.datasource.db2.password"));
-        druidDataSource.setDriverClassName(environment.getProperty("spring.datasource.driver-class-name"));
-        return druidDataSource;
-    }
     @Bean(name = "localSqlSessionRef")
     public SqlSessionFactory localSqlSessionRef() throws Exception {
         SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mybatis/local/*.xml"));
+        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mybatis/*.xml"));
         sqlSessionFactoryBean.setDataSource(localDataSource());
         return sqlSessionFactoryBean.getObject();
     }
-    @Bean(name = "remoteSqlSessionRef")
-    public SqlSessionFactory remoteSqlSessionRef() throws Exception {
-        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
-        sqlSessionFactoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mybatis/remote/*.xml"));
-        sqlSessionFactoryBean.setDataSource(remoteDataSource());
-        return sqlSessionFactoryBean.getObject();
-    }
+
 }

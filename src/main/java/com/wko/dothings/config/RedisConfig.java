@@ -6,6 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.interceptor.KeyGenerator;
@@ -25,6 +28,10 @@ import java.time.Duration;
 
 @Configuration
 public class RedisConfig<K, V> extends CachingConfigurerSupport {
+
+    public static final String REDIS_ADDRESS = "redis://114.132.225.20:8844";
+
+    public static final String PASSWORD = "wkofu123";
 
     /**
      * 自定义缓存注解key的生成策略。默认的生成策略是看不懂的(乱码内容)
@@ -61,6 +68,7 @@ public class RedisConfig<K, V> extends CachingConfigurerSupport {
 
     /**
      * 修改redisTemplate的序列化方式
+     *
      * @param factory LettuceConnectionFactory，即连接池的链接方式
      */
     @Bean(name = "redisTemplate")
@@ -82,6 +90,7 @@ public class RedisConfig<K, V> extends CachingConfigurerSupport {
 
     /**
      * key采用String的序列化方式
+     *
      * @return
      */
     private RedisSerializer<String> keySerializer() {
@@ -90,6 +99,7 @@ public class RedisConfig<K, V> extends CachingConfigurerSupport {
 
     /**
      * value序列化方式采用jackson
+     *
      * @return
      */
     private RedisSerializer<Object> valueSerializer() {
@@ -106,6 +116,16 @@ public class RedisConfig<K, V> extends CachingConfigurerSupport {
 
         jackson2JsonRedisSerializer.setObjectMapper(om);
         return jackson2JsonRedisSerializer;
+    }
+
+    /**
+     * redisson配置
+     */
+    @Bean
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer().setAddress(REDIS_ADDRESS).setPassword(PASSWORD);
+        return Redisson.create(config);
     }
 
 }

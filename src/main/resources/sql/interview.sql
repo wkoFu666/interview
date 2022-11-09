@@ -11,7 +11,7 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 08/11/2022 14:54:03
+ Date: 09/11/2022 14:40:28
 */
 
 SET NAMES utf8mb4;
@@ -23,6 +23,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `tb_cash_out_order`;
 CREATE TABLE `tb_cash_out_order`  (
   `order_id` bigint(20) NOT NULL COMMENT '提现订单id',
+  `user_id` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户id',
   `cash_out_amount` int(11) NOT NULL COMMENT '提现金额',
   `create_time` timestamp(0) NOT NULL COMMENT '创建时间',
   `end_time` timestamp(0) NULL DEFAULT NULL COMMENT '结束时间',
@@ -36,10 +37,11 @@ CREATE TABLE `tb_cash_out_order`  (
 DROP TABLE IF EXISTS `tb_purchase_order`;
 CREATE TABLE `tb_purchase_order`  (
   `order_id` bigint(20) NOT NULL COMMENT '购买订单id',
+  `user_id` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户id',
   `purchase_amount` int(11) NOT NULL COMMENT '购买金额',
   `create_time` timestamp(0) NOT NULL COMMENT '订单开始时间',
-  `finsh_time` timestamp(0) NOT NULL COMMENT '若订单完成，则为完成时间，否为过期时间',
-  `is_finsh` timestamp(0) NOT NULL COMMENT '订单是否完成：0：否 1：完成',
+  `finish_time` timestamp(0) NOT NULL COMMENT '若订单完成，则为完成时间，否为过期时间',
+  `is_finish` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '订单是否完成：0：否 1：完成',
   PRIMARY KEY (`order_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '购买订单表' ROW_FORMAT = Dynamic;
 
@@ -49,10 +51,11 @@ CREATE TABLE `tb_purchase_order`  (
 DROP TABLE IF EXISTS `tb_recharge_order`;
 CREATE TABLE `tb_recharge_order`  (
   `order_id` bigint(20) NOT NULL COMMENT '充值订单id',
+  `user_id` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户id',
   `recharge_amount` int(11) NOT NULL COMMENT '充值金额',
   `create_time` timestamp(0) NOT NULL COMMENT '订单开始时间',
-  `finsh_time` timestamp(0) NOT NULL COMMENT '若订单完成，则为完成时间，否为过期时间',
-  `is_finsh` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '订单是否完成：0：否 1：完成',
+  `finish_time` timestamp(0) NOT NULL COMMENT '若订单完成，则为完成时间，否为过期时间',
+  `is_finish` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '订单是否完成：0：否 1：完成',
   PRIMARY KEY (`order_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '充值订单表' ROW_FORMAT = Dynamic;
 
@@ -62,6 +65,7 @@ CREATE TABLE `tb_recharge_order`  (
 DROP TABLE IF EXISTS `tb_refund_order`;
 CREATE TABLE `tb_refund_order`  (
   `refund_order_id` bigint(20) NOT NULL COMMENT '退款订单id',
+  `user_id` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户id',
   `refund_amount` int(11) NOT NULL COMMENT '退款金额',
   `order_id` bigint(20) NOT NULL COMMENT '退款的关联订单id',
   `create_time` timestamp(0) NOT NULL COMMENT '订单开始时间',
@@ -81,19 +85,19 @@ CREATE TABLE `user_wallet`  (
   `balance` int(10) UNSIGNED ZEROFILL NOT NULL COMMENT '余额',
   `update_time` timestamp(0) NOT NULL COMMENT '余额最后变动时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户钱包表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户钱包表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for wallet_balance_record
 -- ----------------------------
 DROP TABLE IF EXISTS `wallet_balance_record`;
 CREATE TABLE `wallet_balance_record`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `user_id` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户id',
+  `wallet_id` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '钱包id',
   `balance_change` int(11) NOT NULL COMMENT '余额变动数（单位：元）',
   `is_entry` char(1) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '余额是增还是减：0：减  1：增',
   `order_id` bigint(20) NOT NULL COMMENT '关联的订单id',
-  `create_time` timestamp(0) NOT NULL COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE
+  `create_time` timestamp(0) NOT NULL COMMENT '创建时间'
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '钱包余额变动记录表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

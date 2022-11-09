@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- Important: StudentVoMapper's name must be the same as the Java file!!!!!!!!!   -->
+<mapper namespace="com.wko.dothings.wallet.dao.WalletMapper">
+
+
+    <!-- resultMap 设置返回值的类型和映射关系 -->
+<!--    <resultMap id="detailMap" type="com.wko.dothings.wallet.entities.WalletBalanceRecord">-->
+<!--        <result property="userId" column="user_id"/>-->
+<!--        <result property="walletId" column="wallet_id"/>-->
+<!--        <result property="balanceChange" column="balanc_change" jdbcType="INT"/>-->
+<!--        <result property="isEntry" column="is_entry"/>-->
+<!--        <result property="orderId" column="order_id" jdbcType="BIGINT"/>-->
+<!--        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>-->
+<!--    </resultMap>-->
+
+</mapper>
